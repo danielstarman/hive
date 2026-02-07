@@ -32,6 +32,24 @@ The hub starts the broker in-process. Spawned agents connect as clients. Every a
 
 🚧 Under active development. See [issues](../../issues) for the roadmap.
 
+## Desktop POC (Tauri)
+
+A new experimental desktop shell lives in `desktop/`:
+
+- Tauri (Rust backend)
+- ConPTY via `portable-pty`
+- xterm.js panes (one per agent)
+
+Run it with:
+
+```bash
+cd desktop
+npm install
+npm run tauri:dev
+```
+
+Details: `desktop/README.md` and `docs/design/tauri-hive.md`.
+
 ## Installation
 
 ```bash
