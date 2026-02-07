@@ -1,0 +1,27 @@
+{
+  "name": "hive",
+  "version": "0.1.0",
+  "description": "Multi-agent chat network for pi — spawn agent panes in Windows Terminal, connect them via WebSocket broker, let them talk.",
+  "keywords": [
+    "pi-package"
+  ],
+  "main": "src/index.ts",
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@mariozechner/pi-ai": "^0.52.6",
+    "@mariozechner/pi-coding-agent": "^0.52.6",
+    "@mariozechner/pi-tui": "^0.52.6",
+    "@sinclair/typebox": "^0.34.48",
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
