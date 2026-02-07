@@ -877,7 +877,8 @@ function setNameplate(ctx: any, state: HiveState): void {
   const port = state.brokerPort;
 
   // Terminal/tab title — visible even when pane is small
-  ctx.ui.setTitle(`🐝 ${name}${role ? ` — ${role}` : ""}`);
+  const shortRole = role.length > 30 ? role.slice(0, 30) + "…" : role;
+  ctx.ui.setTitle(`🐝 ${name}${shortRole ? ` — ${shortRole}` : ""}`);
 
   // Status bar (footer) — persistent, compact
   if (isHub) {
@@ -906,7 +907,8 @@ function updateNameplateWidget(ctx: any, state: HiveState): void {
   });
 
   const lines: string[] = [];
-  const identity = `🐝 ${state.agentName} (${state.agentRole})`;
+  const shortRole = state.agentRole.length > 30 ? state.agentRole.slice(0, 30) + "…" : state.agentRole;
+  const identity = `🐝 ${state.agentName} (${shortRole})`;
 
   if (others.length > 0) {
     lines.push(`${identity}  │  ${onlineNames.join("  ")}`);
@@ -932,6 +934,11 @@ function setupMessageHandlers(client: HiveClient, state: HiveState, ctx: any): v
     }
     if (msg.type === "channel_message") {
       addActivity(ctx, state, `#${msg.channel} ${msg.fromName}: ${truncate(msg.content, 70)}`);
+    }
+
+    // Update nameplate when we first get the agent list
+    if (msg.type === "registered") {
+      if (ctx.hasUI) updateNameplateWidget(ctx, state);
     }
 
     // Update nameplate + notifications on network changes
