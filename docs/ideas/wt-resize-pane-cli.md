@@ -17,9 +17,29 @@ wt -w 0 resize-pane --direction right --percent 5
 
 ## Prior Art & Community Interest
 
-- **Issue [#17843](https://github.com/microsoft/terminal/issues/17843)** — "Allow user to specify resize amount" (open, Sep 2024). A WT team member (`carlos-zamora`) wrote a detailed implementation guide in the comments. Someone volunteered to work on it but the PR was never completed.
-- **PR [#16895](https://github.com/microsoft/terminal/pull/16895)** — Related PR that the WT team pointed to as relevant.
-- The internal `resizePane` action and keyboard shortcut already exist — the resize logic is fully implemented. It's just not exposed via CLI.
+**Nobody has filed a dedicated issue for exposing `resize-pane` as a CLI command.** But the demand is clearly there — people keep hitting the wall:
+
+### Related Issues
+- **[#6002](https://github.com/microsoft/terminal/issues/6002)** — "Split panes equally in size" (open, 2020, 20+ comments). Tons of people want equal-split layouts from CLI. Workaround: manually calculate `--size` fractions at split time (exactly what hive does). People wrote Python/PowerShell scripts to compute the fractions. A WT team member (`zadjii-msft`) suggested a `resizeParents: true` arg on `splitPane`. **4+ years open, no resolution.**
+- **[#4456](https://github.com/microsoft/terminal/issues/4456)** — "Ability to evenly resize splits" (open). Wants a keystroke to equalize panes.
+- **[#17843](https://github.com/microsoft/terminal/issues/17843)** — "Allow user to specify resize amount" (open, Sep 2024). WT team member `carlos-zamora` wrote a **detailed implementation guide** in the comments (which files to edit, what methods to call). A volunteer started but never finished.
+- **[#16895](https://github.com/microsoft/terminal/pull/16895)** — Related PR pointed to by the WT team.
+
+### The Gap
+Everyone's asking for resize at *split time* (equal splits) or via *keyboard* (custom amounts). But **nobody has asked for resize via `wt` CLI after creation**. This is the real unlock — it enables:
+- Dynamic rebalancing by external tools
+- Layout management scripts
+- Agent frameworks (like hive) adjusting panes at runtime
+- tmux-like pane management wrappers
+
+### Community Workarounds
+People are writing scripts to pre-calculate split fractions:
+```python
+# From issue #6002 — computing equal splits
+sizes = np.arange(n-1, 0, -1) / np.arange(n, 1, -1)
+# wt ;sp -H -s 0.8;sp -H -s 0.75;sp -H -s 0.67;sp -H -s 0.5
+```
+This only works at creation time. Once panes exist, you're stuck.
 
 ## Implementation Scope (Small)
 
